@@ -27,9 +27,9 @@
         </DataGrid>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Добавить строку" Click="AddRow_Click" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
-            <Button Content="Удалить строку" Click="RemoveRow_Click" Padding="16,10" Background="#E0E0E0" Foreground="#212121" BorderThickness="0" Cursor="Hand" Margin="0,0,10,0"/>
+            <Button Content="Удалить строку" Click="RemoveRow_Click" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" MinWidth="120"/>
             <Button Content="Сохранить" Click="Save_Click" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
-            <Button Content="Отмена" Click="Cancel_Click" Padding="16,10" Background="#E0E0E0" Foreground="#212121" BorderThickness="0" Cursor="Hand"/>
+            <Button Content="Отмена" Click="Cancel_Click" Style="{StaticResource SecondaryButton}" MinWidth="100"/>
         </StackPanel>
     </Grid>
 </Window>

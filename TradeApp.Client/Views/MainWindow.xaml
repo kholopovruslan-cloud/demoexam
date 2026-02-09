@@ -13,7 +13,10 @@
         <Menu Grid.Row="0" Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" Padding="8,4">
             <MenuItem Header="Товары" Command="{Binding SelectProductsTabCommand}"/>
             <MenuItem Header="Заказы" Command="{Binding SelectOrdersTabCommand}" Visibility="{Binding CanViewOrdersList, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-            <MenuItem Header="Отчеты"><MenuItem Header="Экспорт товаров в CSV/Excel" Command="{Binding ExportProductsCsvCommand}"/></MenuItem>
+            <MenuItem Header="Отчеты">
+                <MenuItem Header="Экспорт товаров в CSV/Excel" Command="{Binding ExportProductsCsvCommand}"
+                          Foreground="#212121" Background="White"/>
+            </MenuItem>
             <MenuItem Header="Выход" Command="{Binding LogoutCommand}"/>
         </Menu>
         <Border Grid.Row="1" Margin="12" Background="{StaticResource SurfaceBrush}" CornerRadius="8" Padding="16"
@@ -66,7 +69,7 @@
                             <DataGridTextColumn Header="Пользователь" Binding="{Binding User.FullName}" Width="150"/>
                             <DataGridTextColumn Header="Статус" Binding="{Binding Status.Name}" Width="120"/>
                             <DataGridTextColumn Header="Дата" Binding="{Binding CreatedAt, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
-                            <DataGridTextColumn Header="Сумма" Binding="{Binding TotalSum, StringFormat=C}" Width="100"/>
+                            <DataGridTextColumn Header="Сумма" Binding="{Binding TotalSum, StringFormat='{}{0:N2}'}" Width="120" MinWidth="100"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
