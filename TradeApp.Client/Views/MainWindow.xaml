@@ -1,0 +1,77 @@
+<Window x:Class="TradeApp.Client.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TradeApp.Client.ViewModels"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Торговое приложение" Height="620" Width="1024" WindowStartupLocation="CenterScreen"
+        TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+        TextElement.FontFamily="{materialDesign:MaterialDesignFont}"
+        Background="{DynamicResource MaterialDesign.Brush.Background}">
+    <Window.DataContext><vm:MainViewModel/></Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <Menu Grid.Row="0" Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" Padding="8,4">
+            <MenuItem Header="Товары" Command="{Binding SelectProductsTabCommand}"/>
+            <MenuItem Header="Заказы" Command="{Binding SelectOrdersTabCommand}" Visibility="{Binding CanViewOrdersList, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <MenuItem Header="Отчеты"><MenuItem Header="Экспорт товаров в CSV/Excel" Command="{Binding ExportProductsCsvCommand}"/></MenuItem>
+            <MenuItem Header="Выход" Command="{Binding LogoutCommand}"/>
+        </Menu>
+        <Border Grid.Row="1" Margin="12" Background="{StaticResource SurfaceBrush}" CornerRadius="8" Padding="16"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Opacity="0.06"/>
+            </Border.Effect>
+        <TabControl FontSize="14" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}" Padding="0,8,0,0">
+            <TabItem Header="Товары">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="14,12" Visibility="{Binding CanSearchAndFilter, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="220" Style="{StaticResource TextBoxStyle}" Margin="0,0,12,0"/>
+                        <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" DisplayMemberPath="Name" Width="160" Style="{StaticResource ComboBoxStyle}" Margin="0,0,12,0"/>
+                        <ComboBox SelectedValue="{Binding SortBy}" SelectedValuePath="Tag" Width="140" Style="{StaticResource ComboBoxStyle}" Margin="0,0,12,0">
+                            <ComboBoxItem Content="По названию" Tag="name"/><ComboBoxItem Content="По цене" Tag="price"/>
+                        </ComboBox>
+                        <CheckBox Content="По возрастанию" IsChecked="{Binding Ascending}" VerticalAlignment="Center" Margin="0,0,12,0" FontSize="14"/>
+                        <Button Content="Обновить" Command="{Binding LoadProductsCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,12,0"/>
+                        <Button Content="Добавить" Command="{Binding AddProductCommand}" Style="{StaticResource PrimaryButton}" Visibility="{Binding CanEditProducts, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,12,0"/>
+                        <Button Content="Изменить" Command="{Binding EditProductCommand}" Style="{StaticResource PrimaryButton}" Visibility="{Binding CanEditProducts, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,12,0"/>
+                        <Button Content="Удалить" Command="{Binding DeleteProductCommand}" Style="{StaticResource PrimaryButton}" Visibility="{Binding CanEditProducts, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="14,12" Visibility="{Binding CanSearchAndFilter, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
+                        <TextBlock Text="Режим просмотра (гость). " VerticalAlignment="Center" Margin="0,0,12,0" FontSize="14"/>
+                        <Button Content="Обновить" Command="{Binding LoadProductsCommand}" Style="{StaticResource PrimaryButton}"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" Style="{StaticResource ModernDataGridStyle}" Margin="0,12,0,0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Категория" Binding="{Binding Category.Name}" Width="120"/>
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=C}" Width="100"/>
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Заказы" Visibility="{Binding CanViewOrdersList, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="14,12">
+                        <Button Content="Обновить" Command="{Binding LoadOrdersCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,12,0"/>
+                        <Button Content="Новый заказ" Command="{Binding CreateOrderCommand}" Style="{StaticResource PrimaryButton}" Visibility="{Binding CanManageOrders, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,12,0"/>
+                        <Button Content="Изменить статус" Command="{Binding ChangeOrderStatusCommand}" Style="{StaticResource PrimaryButton}" Visibility="{Binding CanManageOrders, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Orders}" SelectedItem="{Binding SelectedOrder}" Style="{StaticResource ModernDataGridStyle}" Margin="0,12,0,0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                            <DataGridTextColumn Header="Пользователь" Binding="{Binding User.FullName}" Width="150"/>
+                            <DataGridTextColumn Header="Статус" Binding="{Binding Status.Name}" Width="120"/>
+                            <DataGridTextColumn Header="Дата" Binding="{Binding CreatedAt, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
+                            <DataGridTextColumn Header="Сумма" Binding="{Binding TotalSum, StringFormat=C}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        </Border>
+    </Grid>
+</Window>
